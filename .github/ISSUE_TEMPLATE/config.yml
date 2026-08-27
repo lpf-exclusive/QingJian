@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 轻笺反馈与建议
+    url: https://github.com/lpf-exclusive/QingJian/issues/new?labels=feedback&template=feedback.md
+    about: 使用反馈、吐槽或一般咨询，直接提交即可
