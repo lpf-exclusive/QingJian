@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>轻笺 QingJian — 秒开 · 不臃肿 · 可离线的 Windows 编辑器</title>
+  <meta name="description" content="轻笺 QingJian 是一款基于 Electron + CodeMirror 6 的轻量级 Windows 文本/代码编辑器，追求秒开、不臃肿、可离线使用。支持语法高亮、多标签、电子表格、思维导图、VCS 浏览与自动更新。" />
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="轻笺首页">
+        <img src="assets/logo.png" alt="轻笺 logo" class="brand-logo" width="32" height="32" />
+        <span class="brand-name">轻笺 <span class="brand-en">QingJian</span></span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#features">功能</a>
+        <a href="#download">下载</a>
+        <a href="#feedback">反馈</a>
+        <a class="nav-gh" href="https://github.com/lpf-exclusive/QingJian" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="切换深浅主题" title="切换深浅主题">
+          <span class="theme-icon">🌗</span>
+        </button>
+        <button class="nav-burger" id="navBurger" aria-label="展开菜单" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="hero-badge">Electron 43 · CodeMirror 6 · 原生 Windows</span>
+          <h1 class="hero-title">秒开 · 不臃肿 · 可离线</h1>
+          <p class="hero-sub">
+            轻笺是一款面向开发者与日常文本处理的轻量级 Windows 编辑器。
+            应用本体 &lt; 1&nbsp;MB，启动即用，离线也能跑满全部核心能力。
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" id="heroDownload" href="https://github.com/lpf-exclusive/QingJian/releases/latest">
+              下载 v<span id="heroVersion">1.3.27</span>
+            </a>
+            <a class="btn btn-ghost" href="#features">查看功能</a>
+          </div>
+          <p class="hero-meta">安装版约 125&nbsp;MB（主要为 Electron 运行时）· 提供安装版与便携版</p>
+        </div>
+
+        <!-- SVG 编辑器示意 mockup -->
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 520 360" class="editor-mock" role="img" aria-label="轻笺编辑器界面示意">
+            <defs>
+              <linearGradient id="gTitle" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+                <stop offset="1" stop-color="#e6fffb" stop-opacity="0.85"/>
+              </linearGradient>
+            </defs>
+            <!-- 窗口外框 -->
+            <rect x="8" y="8" width="504" height="344" rx="14" fill="url(#gTitle)" stroke="#018B8D" stroke-width="2"/>
+            <!-- 标题栏 -->
+            <rect x="8" y="8" width="504" height="34" rx="14" fill="#018B8D"/>
+            <rect x="8" y="28" width="504" height="14" fill="#018B8D"/>
+            <circle cx="30" cy="25" r="5" fill="#ffffff" opacity="0.85"/>
+            <circle cx="48" cy="25" r="5" fill="#ffffff" opacity="0.6"/>
+            <circle cx="66" cy="25" r="5" fill="#ffffff" opacity="0.4"/>
+            <rect x="230" y="18" width="120" height="14" rx="7" fill="#ffffff" opacity="0.85"/>
+            <!-- 侧栏 -->
+            <rect x="8" y="42" width="120" height="310" fill="#e6fffb"/>
+            <rect x="22" y="60" width="92" height="12" rx="6" fill="#018B8D" opacity="0.25"/>
+            <rect x="22" y="84" width="80" height="10" rx="5" fill="#018B8D" opacity="0.18"/>
+            <rect x="22" y="104" width="88" height="10" rx="5" fill="#018B8D" opacity="0.18"/>
+            <rect x="22" y="124" width="70" height="10" rx="5" fill="#018B8D" opacity="0.18"/>
+            <!-- 标签栏 -->
+            <rect x="128" y="50" width="120" height="22" rx="6" fill="#ffffff" stroke="#018B8D" stroke-width="1.5"/>
+            <rect x="134" y="57" width="70" height="8" rx="4" fill="#018B8D" opacity="0.5"/>
+            <rect x="252" y="50" width="120" height="22" rx="6" fill="#e6fffb"/>
+            <rect x="258" y="57" width="60" height="8" rx="4" fill="#018B8D" opacity="0.3"/>
+            <!-- 编辑区代码行 -->
+            <g fill="#cfd8dc">
+              <rect x="146" y="92" width="220" height="9" rx="4.5"/>
+              <rect x="146" y="110" width="300" height="9" rx="4.5" fill="#b2dfdb"/>
+              <rect x="170" y="128" width="260" height="9" rx="4.5"/>
+              <rect x="170" y="146" width="180" height="9" rx="4.5" fill="#b2dfdb"/>
+              <rect x="146" y="164" width="320" height="9" rx="4.5"/>
+              <rect x="170" y="182" width="240" height="9" rx="4.5" fill="#b2dfdb"/>
+              <rect x="146" y="200" width="280" height="9" rx="4.5"/>
+              <rect x="170" y="218" width="200" height="9" rx="4.5" fill="#b2dfdb"/>
+              <rect x="146" y="236" width="300" height="9" rx="4.5"/>
+              <rect x="170" y="254" width="160" height="9" rx="4.5" fill="#b2dfdb"/>
+            </g>
+            <!-- 语法高亮点缀 -->
+            <rect x="146" y="110" width="46" height="9" rx="4.5" fill="#018B8D" opacity="0.7"/>
+            <rect x="170" y="146" width="40" height="9" rx="4.5" fill="#018B8D" opacity="0.7"/>
+            <rect x="146" y="200" width="52" height="9" rx="4.5" fill="#018B8D" opacity="0.7"/>
+            <!-- 状态栏 -->
+            <rect x="8" y="330" width="504" height="22" fill="#018B8D" opacity="0.12"/>
+            <rect x="22" y="337" width="60" height="8" rx="4" fill="#018B8D" opacity="0.4"/>
+            <rect x="430" y="337" width="70" height="8" rx="4" fill="#018B8D" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 功能特性 -->
+    <section class="section" id="features">
+      <div class="section-head">
+        <h2>核心能力</h2>
+        <p>覆盖日常写作、代码开发与文件管理，全部本地运行，无需登录、不上传数据。</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon">✍️</div>
+          <h3>编辑器核心</h3>
+          <ul>
+            <li>多标签页编辑，支持拖拽排序</li>
+            <li>CodeMirror 6 语法高亮、行号、代码折叠、括号匹配</li>
+            <li>20+ 语言：JS/TS、JSON、HTML、Python、Java、Go、SQL、Markdown…</li>
+            <li>大文件分级：5–100&nbsp;MB 关高亮保流畅，&gt;100&nbsp;MB 只读兜底</li>
+            <li>查找/替换（正则）、跳转行、全局搜索</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="card-icon">📂</div>
+          <h3>文件与会话</h3>
+          <ul>
+            <li>打开 / 保存 / 另存为 / 拖拽打开</li>
+            <li>最近文件列表</li>
+            <li>会话恢复：未保存的临时内容不丢失</li>
+            <li>外部修改监听与提示</li>
+            <li>自动保存（默认 3 秒防抖）</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="card-icon">🧩</div>
+          <h3>扩展视图</h3>
+          <ul>
+            <li>侧边栏：文件目录树、大纲、代码片段</li>
+            <li>电子表格：公式、跨表引用、20+ 函数、CSV/Excel 导入导出</li>
+            <li>思维导图：文本一键转脑图</li>
+            <li>VCS 文件浏览器：连接 GitHub / Gitee / GitLab 远程浏览</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>系统与更新</h3>
+          <ul>
+            <li>无边框窗口 + 系统托盘，关闭不退出</li>
+            <li>浅色 / 深色主题，首次默认浅色</li>
+            <li>内置自动更新：下载完成原地升级</li>
+            <li>保持你的安装路径与历史配置不变</li>
+            <li>偏好设置：字体、字号、换行、缩进</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 下载 -->
+    <section class="section section-download" id="download">
+      <div class="section-head">
+        <h2>下载</h2>
+        <p>当前版本 <span class="ver-badge">v<span id="downloadVersion">1.3.27</span></span> · 仅支持 Windows</p>
+      </div>
+      <div class="download-grid">
+        <div class="dl-card">
+          <h3>安装版 <span class="tag">推荐</span></h3>
+          <p>双击 <code>QingJian-Setup-*.exe</code> 按向导安装，开始菜单与桌面生成快捷方式，支持自动更新。</p>
+          <a class="btn btn-primary btn-block" id="dlSetup" href="https://github.com/lpf-exclusive/QingJian/releases/latest">
+            下载安装版
+          </a>
+        </div>
+        <div class="dl-card">
+          <h3>便携版</h3>
+          <p>解压到任意目录（U 盘 / 移动硬盘）双击 <code>QingJian.exe</code> 即用，不写注册表，零痕迹。</p>
+          <a class="btn btn-ghost btn-block" id="dlPortable" href="https://github.com/lpf-exclusive/QingJian/releases/latest">
+            下载便携版
+          </a>
+        </div>
+      </div>
+      <p class="dl-note">
+        所有安装包托管于 GitHub Releases：
+        <a href="https://github.com/lpf-exclusive/QingJian/releases" target="_blank" rel="noopener">lpf-exclusive/QingJian</a>。
+        更新器会从同一地址静默拉取增量，无需手动关注。
+      </p>
+    </section>
+
+    <!-- 反馈 -->
+    <section class="section section-feedback" id="feedback">
+      <div class="feedback-inner">
+        <h2>有问题或建议？</h2>
+        <p>轻笺不收集任何遥测，你的反馈是改进的唯一来源。欢迎在 GitHub 提交 Issue。</p>
+        <div class="feedback-actions">
+          <a class="btn btn-primary" href="https://github.com/lpf-exclusive/QingJian/issues/new?template=feedback.md&labels=feedback&title=[反馈]%20&body=版本：%0A系统：%0A现象描述：%0A" target="_blank" rel="noopener">在 GitHub 提反馈</a>
+          <a class="btn btn-ghost" href="https://github.com/lpf-exclusive/QingJian/issues" target="_blank" rel="noopener">查看已有 Issue</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="轻笺 logo" width="24" height="24" />
+        <span>轻笺 QingJian</span>
+      </div>
+      <nav class="footer-links">
+        <a href="https://github.com/lpf-exclusive/QingJian" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/lpf-exclusive/QingJian/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="#feedback">反馈</a>
+        <a href="#download">下载</a>
+      </nav>
+      <p class="footer-copy">Copyright © 2026 轻笺 QingJian. 保留所有权利。</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
