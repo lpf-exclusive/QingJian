@@ -1,375 +1,139 @@
-# 轻笺 (QingJian) 设计方案 —— v1.3.13 实际落地版
+# 轻笺 (QingJian)
 
-> 本文档基于实际已实现的 Electron + CodeMirror 6 版本重写，替代早期 Tauri 预研方案，用于后续版本跟踪。
+一款基于 Electron + CodeMirror 6 的轻量级 Windows 文本/代码编辑器，追求「秒开、不臃肿、可离线使用」。
 
----
-
-## 一、产品定位
-
-| 维度 | 说明 |
-|------|------|
-| **目标用户** | 后端开发者、系统管理员、日常文本处理用户 |
-| **核心价值** | 秒开、轻量、不臃肿、离线可用、自动更新 |
-| **差异化** | 比 Notepad++ 更现代的 UI；比 Sublime Text 更自由；比 VS Code 更轻量 |
-| **产品名** | 轻笺 (QingJian) — 取“轻巧笔记”之意 |
-| **当前版本** | v1.3.13 |
-| **运行平台** | Windows（安装版 + 便携版） |
+🌐 官方主页：[https://lpf-exclusive.github.io/QingJian/](https://lpf-exclusive.github.io/QingJian/)
 
 ---
 
-## 二、实际技术选型（已落地）
+## 简介
 
-早期曾调研 Tauri 2.0，后因开发效率与打包成熟度原因，实际采用 **Electron 43 + CodeMirror 6 + 原生 ES Modules** 方案。
+轻笺是一款面向开发者和日常文本处理用户的轻量编辑器，采用现代 Web 技术栈实现。当前版本已实现多标签编辑、语法高亮、打开的文件面板、搜索替换、代码片段、电子表格预览、版本控制（VCS）浏览、思维导图、自动更新等能力。
 
-| 对比项 | Electron + CM6（实际采用） | Electron + Monaco | Tauri + CM6 |
-|--------|:-------------------------:|:-----------------:|:-----------:|
-| 安装包体积 | ~125 MB | ~130 MB | ~10 MB |
-| 内存占用 | ~150 MB | ~250 MB | ~60 MB |
-| 冷启动速度 | ~500 ms | ~800 ms | ~300 ms |
-| 跨平台 | Win/Mac/Linux（当前仅 Win） | 全平台 | 全平台 |
-| 打包/自动更新 | 成熟（electron-updater） | 可用 | 生态成长中 |
-| 开发效率 | 高 | 高 | 中高 |
-| 离线可用 | 是 | 是 | 是 |
-
-### 选择理由
-
-1. **Electron 43**：成熟稳定，自动更新、系统托盘、本地文件访问等能力开箱即用；本机前端技术栈熟悉，调试成本低。
-2. **CodeMirror 6**：模块化、增量解析、按需加载语言包，性能足以支撑大文件。
-3. **原生 ES Modules**：无额外前端框架，打包产物极小，用户代码 < 1 MB。
-4. **NSIS + 手写脚本**：完全可控安装路径、覆盖逻辑、图标注入与更新行为。
+- **安装包体积**：约 125 MB（主要由 Electron 运行时决定，应用本体 < 1 MB）
+- **运行平台**：Windows（提供安装版与便携版）
+- **当前版本**：v1.3.27（GitHub Release 已发布）
 
 ---
 
-## 三、系统架构
+## 功能特性
 
-```
-┌───────────────────────────────────────────────────────────┐
-│  Electron Main Process (main.js)                          │
-│  窗口/Tray │ 本地 HTTP 服务 │ IPC │ 自动更新 │ 安全存储   │
-├───────────────────────────────────────────────────────────┤
-│  preload.js — 最小化暴露 electronAPI                      │
-├───────────────────────────────────────────────────────────┤
-│  Renderer Process (src/*.js)                              │
-│  app.js(主逻辑) │ state.js │ ui.js │ settings.js          │
-│  tabs │ language │ search │ spreadsheet │ formula         │
-│  mindmap │ outline │ sidebar │ snippets │ vcs-ui          │
-├───────────────────────────────────────────────────────────┤
-│  CodeMirror 6 Engine                                      │
-│  语法高亮 │ 行号 │ 搜索替换 │ 多光标 │ 代码折叠           │
-└───────────────────────────────────────────────────────────┘
-```
+### 编辑器核心
+- 多标签页编辑，支持拖拽排序
+- 基于 CodeMirror 6 的语法高亮、行号、代码折叠、括号匹配
+- 多语言支持：JavaScript/TypeScript、JSON、HTML、CSS、Python、Java、C/C++、Go、Rust、SQL、Shell、Markdown、XML、YAML 等
+- 大文件分级策略：5–100 MB 可编辑但关闭语法高亮保证流畅；>100 MB 硬只读兜底
+- 查找/替换（支持正则）、跳转行、全局搜索
+- 主题切换：浅色 / 深色（首次安装默认浅色）
+- 字体、字号、自动换行、缩进等偏好设置
 
-### 进程通信
+### 文件与会话
+- 本地文件打开 / 保存 / 另存为 / 拖拽打开
+- 最近文件列表
+- 会话恢复（未保存的临时内容不会丢失）
+- 文件外部修改监听与提示
+- 自动保存（默认 3 秒防抖）
 
-- **Main → Renderer**：`BrowserWindow.webContents.send`
-- **Renderer → Main**：`ipcRenderer.invoke('channel', ...args)`，经 `contextBridge` 暴露
-- **本地 HTTP**：`main.js` 启动 `http-server`，`index.html` 经 `http://localhost:<port>/` 加载，满足 ES module 同源要求
-- **安全策略**：CSP meta、`openFileByPath` 白名单、禁止 `..` 路径穿越、safeStorage 加密 VCS Token
+### 扩展视图
+- 侧边栏：文件目录树、大纲视图、代码片段面板
+- 电子表格：支持公式、跨表引用、20+ 函数、CSV/Excel 导入导出
+- 思维导图：文本转脑图
+- VCS 文件浏览器：连接 GitHub / Gitee / GitLab，远程浏览与打开文件
 
----
-
-## 四、项目目录结构
-
-```
-qingjian-electron/
-├── main.js                  # 主进程：窗口、Tray、HTTP、IPC、自动更新
-├── preload.js               # 安全桥接
-├── package.json             # 应用版本、electron-builder 配置
-├── app-update.yml           # 自动更新源配置（generic / GitHub CDN）
-├── index.html               # 渲染入口
-├── icon.ico / icon.png      # 应用图标（安装程序 / 托盘 / 窗口）
-├── src/
-│   ├── app.js               # 应用核心逻辑（原 4844 行已拆分为 14 模块后保留的主控）
-│   ├── state.js             # 共享可变状态
-│   ├── settings.js          # 用户偏好与 localStorage 持久化
-│   ├── ui.js                # UI 渲染辅助
-│   ├── tabs.js              # 标签页创建/切换/关闭
-│   ├── language.js          # 语言包懒加载
-│   ├── session.js           # 会话保存/恢复
-│   ├── search.js            # 搜索面板
-│   ├── sidebar.js           # 侧边栏/文件树
-│   ├── outline.js           # 大纲视图
-│   ├── mindmap.js           # 思维导图
-│   ├── snippets.js          # 代码片段
-│   ├── spreadsheet.js       # 电子表格
-│   ├── formula.js           # 公式引擎（纯函数）
-│   ├── vcs-ui.js            # VCS 远程文件浏览器
-│   └── ...                  # 其他工具模块
-├── scripts/
-│   ├── inject_icon.py       # Win32 UpdateResource 图标注入
-│   ├── gen-latest-yml.py    # 生成 latest.yml
-│   ├── smoke-test.js        # 回归冒烟测试
-│   ├── import-smoke.mjs     # 模块导出/导入检查
-│   └── *_test.mjs           # 各模块单元测试
-├── build/
-│   ├── make_icon.py         # 从源图生成最终绿色圆角图标
-│   ├── icon.ico / icon.png  # 最终图标产物
-│   └── icon_75.ico / .png   # 历史中间图标（备份）
-├── _overlay7/               # 安装包用图标 + 已注入图标的 QingJian.exe
-├── _overlay9/               # 覆盖进安装包的 main.js/package.json/index.html
-└── installer_build_*.nsi    # NSIS 安装脚本（当前 canonical：142/143）
-```
+### 系统与更新
+- 自定义无边框窗口 + 系统托盘
+- 关闭窗口不退出，托盘常驻
+- 内置自动更新：下载完成自动原地升级，保持你的安装路径不变
 
 ---
 
-## 五、核心功能设计
+## 安装与使用
 
-### 5.1 文件管理
+### 安装版（推荐）
 
-| 功能 | 实现方式 |
-|------|----------|
-| 打开文件 | IPC `open-file-dialog` / 拖拽 / 最近文件 |
-| 保存文件 | IPC `save-file` / `save-file-as`，Ctrl+S |
-| 最近文件 | `localStorage` + 主进程 `recentFiles` |
-| 文件监听 | Node `fs.watch` 200 ms 防抖，外部变更提示重载 |
-| 大文件 | >5 MB 关闭语法高亮；>100 MB 只读；启动延迟显示 |
+前往 [Releases](https://github.com/lpf-exclusive/QingJian/releases) 下载最新的 `QingJian-Setup-<版本>.exe`，双击运行，按向导完成安装即可。
 
-### 5.2 编码处理
+### 便携版
 
-- 默认 UTF-8
-- 通过 CodeMirror 与浏览器原生能力处理常见编码
-- 大文件不保存选区/撤销栈，避免内存爆炸
+下载 Releases 中的便携版压缩包，解压到任意目录，双击 `QingJian.exe` 即可运行，不写注册表，适合放在 U 盘或移动硬盘中使用。
 
-### 5.3 编辑器功能
+### 首次启动
 
-| 功能 | 实现 |
-|------|------|
-| 语法高亮 | CodeMirror 6 `StreamLanguage` / 官方语言包 |
-| 行号 | `@codemirror/gutter` |
-| 代码折叠 | `@codemirror/language` foldService |
-| 搜索替换 | `@codemirror/search` + 自定义面板 |
-| 多光标 | CodeMirror 内置 |
-| 括号匹配 | CodeMirror 内置 |
-| 主题 | 浅色 / 深色，CSS 变量切换 |
-
-### 5.4 语法支持
-
-JavaScript/TypeScript、JSON、HTML、CSS、Python、Java、C/C++、Go、Rust、PHP、SQL、Shell、Markdown、XML、YAML、Vue、JSX/TSX 等。
-
-### 5.5 主题系统
-
-- 首次安装默认 **浅色主题**（`settings.theme = 'light'`）。
-- 已保存偏好的用户升级后保留原主题。
-- 主题切换通过修改 `document.body` class 与 CodeMirror 主题扩展实现。
-
-### 5.6 快捷键
-
-见 README.md「常用快捷键」。
-
-### 5.7 电子表格
-
-- 纯函数公式引擎 `formula.js`，零 DOM 依赖。
-- 支持跨表引用（`Sheet2!A1`、`Sheet 1!A1`）、绝对引用、20+ 函数。
-- 循环检测、错误值集（`#VALUE!`、`#REF!`、`#CIRC!` 等）。
-- 编辑时仅标记脏单元格，显示时整表求值刷新，保证性能。
-- 导入/导出 CSV、XLSX（导入保留公式）。
-
-### 5.8 VCS 浏览器
-
-- 支持 GitHub / Gitee / GitLab REST API。
-- Token 用 `safeStorage` 加密存储（前缀 `enc:`）。
-- 配置持久化到 `userData/vcs-config.json`。
-
-### 5.9 思维导图
-
-- 文本大纲转思维导图，支持节点展开/折叠。
+首次安装默认使用 **浅色主题**，可通过右下角主题按钮或菜单「视图 → 切换主题」切换为深色。
 
 ---
 
-## 六、自动更新设计
+## 自动更新说明
 
-### 6.1 更新源
+轻笺内置自动更新机制，**全程对用户无感、无需手动干预**：
 
-采用 `electron-updater` 的 **generic provider**，直接请求 GitHub Releases 的 `latest/download` 文件 CDN：
+1. 启动后会在后台静默检查是否有新版本。
+2. 发现新版本时通过托盘或菜单提示，点击「检查更新」即可下载安装包。
+3. 下载完成后弹出确认框，确认即退出并启动安装包。
+4. 安装包自动原地升级，保持你的安装路径不变，历史偏好与配置均保留。
 
-```js
-autoUpdater.setFeedURL({
-  provider: 'generic',
-  url: 'https://github.com/lpf-exclusive/QingJian/releases/latest/download'
-})
-```
-
-避免使用 `provider: 'github'`（底层请求 `api.github.com`，国内容易超时）。
-
-### 6.2 配置清单
-
-手写 NSIS 安装包需包含 `resources/app-update.yml`：
-
-```yaml
-provider: generic
-url: https://github.com/lpf-exclusive/QingJian/releases/latest/download
-```
-
-### 6.3 原地安装
-
-`electron-updater` 默认可能按注册表路径安装。为确保更新安装到当前目录，在 `main.js` 中显式设置：
-
-```js
-_autoUpdater.installDirectory = path.dirname(app.getPath('exe'))
-```
-
-安装包静默安装时带 `/D=当前目录`，实现原地升级。
-
-### 6.4 发布流程
-
-1. bump `package.json` 与 `_overlay9/dist_package.json`。
-2. 生成 `installer_build_<N>.nsi`，编译安装包。
-3. 运行 `scripts/gen-latest-yml.py` 生成 `latest.yml`。
-4. GitHub Release 上传：
-   - `QingJian-Setup-<版本>.exe`
-   - `latest.yml`
-5. 标记为 Latest Release。
+如需手动检查，可在托盘菜单或主菜单「帮助 → 检查更新」中触发。
 
 ---
 
-## 七、图标与品牌
+## 常用快捷键
 
-### 7.1 图标生成
+| 快捷键 | 功能 |
+|--------|------|
+| Ctrl + N | 新建文件 |
+| Ctrl + O | 打开文件 |
+| Ctrl + S | 保存 |
+| Ctrl + Shift + S | 另存为 |
+| Ctrl + W | 关闭标签页 |
+| Ctrl + Tab | 切换标签页 |
+| Ctrl + F | 查找 |
+| Ctrl + H | 替换 |
+| Ctrl + G | 跳转行 |
+| Ctrl + + / - | 放大 / 缩小字体 |
+| F11 | 全屏 |
 
-`build/make_icon.py` 从源 PNG 提取白色“笺”字，重绘纯绿色圆角背景（`#4CAF50`），消除源图抗锯齿白边，输出：
-
-- `build/icon.png`
-- `build/icon.ico`
-- 根目录 `icon.png` / `icon.ico`（供 NSIS MUI_ICON/MUI_UNICON 使用）
-
-### 7.2 图标注入
-
-Windows 应用图标通过 `scripts/inject_icon.py` 使用 `Win32 UpdateResource` 注入到 `QingJian.exe`，支持 16/24/32/48/64/128/256 多尺寸。
-
-注入目标：
-
-- `_overlay7/QingJian.exe`（安装包使用的 EXE）
-- `QingJian-portable-v12/QingJian.exe`（便携版 EXE）
-
-安装程序与卸载程序图标由 NSIS `MUI_ICON` / `MUI_UNICON` 读取根目录 `icon.ico`。
+完整快捷键见应用内「帮助 → 快捷键」。
 
 ---
 
-## 八、数据持久化
+## 技术栈
 
-### 8.1 用户设置
-
-`localStorage`：`qingjian-settings`
-
-```json
-{
-  "theme": "light",
-  "fontSize": 14,
-  "fontFamily": "'JetBrains Mono', 'Consolas', monospace",
-  "tabSize": 2,
-  "wordWrap": true,
-  "autoSave": true,
-  "autoSaveDelay": 3000
-}
-```
-
-### 8.2 会话恢复
-
-`localStorage`：`qingjian-session`
-
-保存：打开的文件路径、光标位置、未保存临时内容、侧边栏状态。
-
-### 8.3 最近文件
-
-`localStorage` + 主进程 `recentFiles` 数组，最多保留 N 条。
+- **Electron**：主进程、窗口管理、系统托盘、自动更新、本地服务
+- **CodeMirror 6**：编辑器核心、语法高亮、搜索替换
+- **NSIS**：Windows 安装包与卸载程序
+- **electron-updater**：自动更新
 
 ---
 
-## 九、性能策略
+## 路线图
 
-| 场景 | 策略 |
-|------|------|
-| 大文件编辑 | 5–100 MB 可编辑但关闭语法高亮；>100 MB 硬只读 |
-| 多标签页 | 非活动标签保留编辑器状态，DOM 切换 |
-| 语法高亮 | CodeMirror 6 增量解析，按需加载语言包 |
-| 文件搜索 | 主进程读取，结果分批返回 |
-| 自动保存 | 3000 ms 防抖 |
-| 文件监听 | 200 ms 防抖 |
-| 启动速度 | 延迟显示窗口，IPC `app:ready` 8 秒超时兜底 |
-
----
-
-## 十、安全策略
-
-- **CSP**：`default-src 'self'`，`script-src 'unsafe-inline'`，`connect-src 'self' https:`
-- **IPC 白名单**：`openFileByPath` 校验绝对路径，禁止 `..` 穿越
-- **Token 加密**：VCS Token 用 Electron `safeStorage` 加密
-- **文件删除**：尽量使用回收站机制（若平台支持）
-- **ARIA**：核心对话框、右键菜单已加 `role` / `aria-*`
-
----
-
-## 十一、开发路线图
-
-### Phase 1 — MVP（已完成）
-- [x] Electron 窗口 + 无边框标题栏 + 系统托盘
-- [x] CodeMirror 6 集成
-- [x] 文件打开/保存/另存为
-- [x] 多标签页编辑
-- [x] 基础语法高亮（JS/JSON/HTML/CSS/Python/Markdown）
-- [x] 行号、搜索替换、跳转行
-- [x] 浅色/深色主题
-
-### Phase 2 — 功能完善（已完成）
-- [x] 侧边栏文件树
-- [x] 代码折叠、多光标
-- [x] 主题切换、设置持久化
-- [x] 最近文件列表
-- [x] 拖拽打开文件
-- [x] 代码片段
-- [x] 大纲视图
-- [x] 文件外部修改检测
-
-### Phase 3 — 高级特性（已完成/进行中）
-- [x] 电子表格 + 公式引擎
+### 已落地（v1.3.x）
+- [x] 基础编辑器与多标签页
+- [x] 语法高亮与语言懒加载
+- [x] 打开的文件面板、大纲、代码片段
+- [x] 搜索替换、跳转行、主题切换
+- [x] 电子表格与公式引擎
 - [x] VCS 远程文件浏览器
 - [x] 思维导图
-- [x] 自动保存
-- [x] 全局搜索
-- [x] 自动更新（generic 源、原地安装）
+- [x] 自动更新（原地安装）
 - [x] 图标注入与浅色主题默认
 
-### Phase 4 — 生态扩展（未来）
+### 未来计划
 - [ ] 插件系统 API
-- [ ] 设置面板 UI 化
 - [ ] 更完善的大文件分块渲染
 - [ ] 多窗口支持
-- [ ] 插件市场（远期）
+- [x] 设置面板 UI 化（五标签：外观 / 通用 / 编辑器 / 远程仓库 / 关于，已交付）
 - [ ] macOS / Linux 适配评估
 
 ---
 
-## 十二、构建与发布清单
+## 反馈与建议
 
-每次发版必须完成：
-
-- [ ] 修改 `main.js` / `src/*.js` 后运行 `node --check`
-- [ ] 运行 `npm test`
-- [ ] 同步 `_overlay9/dist_main.js`、`_overlay9/dist_package.json`、`_overlay9/index.html`
-- [ ] 同步便携版 `resources/app/`
-- [ ] 若更新图标，运行 `inject_icon.py` 注入 `_overlay7/QingJian.exe` 与便携版 EXE
-- [ ] bump `package.json` 与 `_overlay9/dist_package.json`
-- [ ] 复制并 sed 生成新 `installer_build_<N>.nsi`
-- [ ] `makensis.exe` 编译
-- [ ] `gen-latest-yml.py` 生成 `latest.yml`
-- [ ] 静默安装实测（PowerShell `Start-Process -ArgumentList`）
-- [ ] GitHub Release 上传 `*.exe` + `latest.yml`，标记 Latest
+轻笺不收集任何遥测，你的反馈是改进的唯一来源。欢迎在 GitHub 提交 Issue：
+[在 GitHub 提反馈](https://github.com/lpf-exclusive/QingJian/issues/new?template=feedback.md&labels=feedback&title=[反馈]%20&body=版本：%0A系统：%0A现象描述：%0A)
 
 ---
 
-## 十三、关键踩坑记录（必读）
+## 许可证
 
-1. **NSIS `File /r /x "package.json"` 会全局排除 node_modules 里的 package.json**，导致 `electron-updater` 无法加载。修复：改为完整复制 + overlay 根文件。
-2. **`index.html` 实际路径是 `resources/app/src/index.html`**，不是 `resources/app/index.html`。overlay 务必写对。
-3. **NSIS `InstallDirRegKey` 在静默 `/S` 下会覆盖 `/D`**。v1.3.12 起已移除 `InstallDirRegKey`，靠 `installDirectory` + `/D` 原地升级。
-4. **Git Bash 传 `/D=D:\Program Files (x86)\QingJian` 会被空格截断**。部署须用 PowerShell `Start-Process -ArgumentList` 数组形式。
-5. **`provider:'github'` 走 `api.github.com`，国内超时**。务必用 `provider:'generic'` + GitHub 文件 CDN。
-6. **electron-updater 仍需要 `resources/app-update.yml`**，手写 NSIS 必须补上。
-7. **图标注入用 `_overlay7/icon.ico`**，若此处是中间产物（如 75% 图标），安装后应用图标仍是错的。注入前务必确认 `build/icon.ico` 是最终版。
-8. **`settings.js` 默认 `theme: 'dark'` 会覆盖 `state.js` 的 `currentTheme: 'light'`**。首次安装默认浅色须在 `settings.js` 改默认值。
-
----
-
-## 十四、总结
-
-轻笺 v1.3.13 已具备稳定的编辑器核心、扩展视图、自动更新与品牌视觉。后续以**插件系统、设置面板 UI 化、跨平台评估**为主要方向。本文档随版本迭代持续更新。
+Copyright © 2026 QingJian. All rights reserved.
