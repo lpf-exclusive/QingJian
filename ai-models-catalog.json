@@ -1,108 +1,163 @@
 [
   {
-    "id": "deepseek-chat", "name": "DeepSeek Chat", "provider": "deepseek", "free": true, "requiresKey": true,
+    "id": "deepseek-chat", "name": "DeepSeek Chat (V3.2)", "provider": "deepseek", "free": true, "requiresKey": true,
     "defaultModel": "deepseek-chat",
     "signupUrl": "https://platform.deepseek.com/", "apiStyle": "openai",
     "endpoint": "https://api.deepseek.com/chat/completions", "contextLimit": 64000,
-    "description": "DeepSeek 通用对话模型，注册即送额度。", "note": "免费档有速率限制"
+    "description": "DeepSeek 通用对话，性价比极高（约 $0.27/$1.10 每百万 token）。", "note": "新用户赠送 5M token / 30 天试用额度",
+    "tags": ["value", "free"]
   },
   {
-    "id": "deepseek-reasoner", "name": "DeepSeek Reasoner", "provider": "deepseek", "free": true, "requiresKey": true,
+    "id": "deepseek-reasoner", "name": "DeepSeek Reasoner (R1)", "provider": "deepseek", "free": true, "requiresKey": true,
     "defaultModel": "deepseek-reasoner",
     "signupUrl": "https://platform.deepseek.com/", "apiStyle": "openai",
     "endpoint": "https://api.deepseek.com/chat/completions", "contextLimit": 64000,
-    "description": "DeepSeek 推理模型，擅长复杂推理与代码。", "note": "免费档有速率限制"
-  },
-  {
-    "id": "qwen-turbo", "name": "通义千问 Turbo", "provider": "qwen", "free": true, "requiresKey": true,
-    "defaultModel": "qwen-turbo",
-    "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
-    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 8000,
-    "description": "通义千问轻量高速档，新用户有免费额度。", "note": "新用户免费额度，额度用尽后计费"
-  },
-  {
-    "id": "qwen-plus", "name": "通义千问 Plus", "provider": "qwen", "free": true, "requiresKey": true,
-    "defaultModel": "qwen-plus",
-    "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
-    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 32000,
-    "description": "通义千问均衡档，性价比高。", "note": "有免费额度，超出计费"
+    "description": "DeepSeek 推理模型，擅长复杂推理与代码（约 $0.55/$2.19 每百万 token）。", "note": "新用户赠送 5M token / 30 天试用额度",
+    "tags": ["value", "free"]
   },
   {
     "id": "qwen-max", "name": "通义千问 Max", "provider": "qwen", "free": true, "requiresKey": true,
     "defaultModel": "qwen-max",
     "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
-    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 32000,
-    "description": "通义千问最强档，复杂任务表现好。", "note": "有免费额度，超出计费"
+    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 128000,
+    "description": "通义千问最强档，复杂任务表现最好（当前指向 qwen3-max 系列）。", "note": "新用户每模型 100 万 token / 90 天免费额度",
+    "tags": ["latest", "free"]
   },
   {
-    "id": "moonshot-v1-8k", "name": "Kimi V1 8K", "provider": "moonshot", "free": true, "requiresKey": true,
-    "defaultModel": "moonshot-v1-8k",
-    "signupUrl": "https://platform.moonshot.cn/", "apiStyle": "openai",
-    "endpoint": "https://api.moonshot.cn/v1/chat/completions", "contextLimit": 8000,
-    "description": "Kimi 长文本模型（8K），新用户有免费额度。", "note": "新用户免费额度，超出计费"
+    "id": "qwen-plus", "name": "通义千问 Plus", "provider": "qwen", "free": true, "requiresKey": true,
+    "defaultModel": "qwen-plus",
+    "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
+    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 128000,
+    "description": "通义千问均衡档，性价比高。", "note": "新用户每模型 100 万 token / 90 天免费额度",
+    "tags": ["value", "free"]
   },
   {
-    "id": "moonshot-v1-128k", "name": "Kimi V1 128K", "provider": "moonshot", "free": true, "requiresKey": true,
-    "defaultModel": "moonshot-v1-128k",
+    "id": "qwen-turbo", "name": "通义千问 Turbo", "provider": "qwen", "free": true, "requiresKey": true,
+    "defaultModel": "qwen-turbo",
+    "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
+    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 128000,
+    "description": "通义千问轻量高速档（已逐步被 Qwen-Flash 取代，仍可正常使用）。", "note": "新用户每模型 100 万 token / 90 天免费额度",
+    "tags": ["value", "free"]
+  },
+  {
+    "id": "kimi-k2.6", "name": "Kimi K2.6", "provider": "moonshot", "free": false, "requiresKey": true,
+    "defaultModel": "kimi-k2.6",
     "signupUrl": "https://platform.moonshot.cn/", "apiStyle": "openai",
-    "endpoint": "https://api.moonshot.cn/v1/chat/completions", "contextLimit": 128000,
-    "description": "Kimi 长文本模型（128K），适合长文档。", "note": "新用户免费额度，超出计费"
+    "endpoint": "https://api.moonshot.cn/v1/chat/completions", "contextLimit": 262144,
+    "description": "Kimi 通用模型，256K 长上下文，支持多模态（约 $0.95/$4 每百万 token）。", "note": "需充值后使用，无免费额度",
+    "tags": ["value"]
+  },
+  {
+    "id": "kimi-k3", "name": "Kimi K3", "provider": "moonshot", "free": false, "requiresKey": true,
+    "defaultModel": "kimi-k3",
+    "signupUrl": "https://platform.moonshot.cn/", "apiStyle": "openai",
+    "endpoint": "https://api.moonshot.cn/v1/chat/completions", "contextLimit": 1048576,
+    "description": "Kimi 当前旗舰，1M 超长上下文，最强智能（约 $3/$15 每百万 token）。", "note": "需充值后使用，无免费额度",
+    "tags": ["latest"]
+  },
+  {
+    "id": "glm-4.7-flash", "name": "智谱 GLM-4.7-Flash", "provider": "zhipu", "free": true, "requiresKey": true,
+    "defaultModel": "glm-4.7-flash",
+    "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
+    "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 200000,
+    "description": "智谱最新 Flash 模型，约 200K 上下文，注册即永久免费（$0/$0）。", "note": "永久免费档，速率限制较严",
+    "tags": ["latest", "free"]
+  },
+  {
+    "id": "glm-4.5-flash", "name": "智谱 GLM-4.5-Flash", "provider": "zhipu", "free": true, "requiresKey": true,
+    "defaultModel": "glm-4.5-flash",
+    "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
+    "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 128000,
+    "description": "智谱 Flash 模型，注册即永久免费（$0/$0）。", "note": "永久免费档",
+    "tags": ["free"]
   },
   {
     "id": "glm-4-flash", "name": "智谱 GLM-4-Flash", "provider": "zhipu", "free": true, "requiresKey": true,
     "defaultModel": "glm-4-flash",
     "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
     "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 128000,
-    "description": "智谱 GLM-4-Flash，注册即免费可用。", "note": "免费档"
+    "description": "智谱 GLM-4-Flash，轻量免费档。", "note": "免费档",
+    "tags": ["free"]
   },
   {
-    "id": "glm-4-air", "name": "智谱 GLM-4-Air", "provider": "zhipu", "free": true, "requiresKey": true,
+    "id": "glm-4-air", "name": "智谱 GLM-4-Air", "provider": "zhipu", "free": false, "requiresKey": true,
     "defaultModel": "glm-4-air",
     "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
     "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 128000,
-    "description": "智谱 GLM-4-Air，低价档。", "note": "有免费额度，超出计费"
+    "description": "智谱 GLM-4-Air，低价档。", "note": "按量计费，有速率限制",
+    "tags": ["value"]
   },
   {
     "id": "sf-qwen2.5-7b", "name": "SiliconFlow · Qwen2.5-7B", "provider": "siliconflow", "free": true, "requiresKey": true,
     "defaultModel": "Qwen/Qwen2.5-7B-Instruct", "apiModel": "Qwen/Qwen2.5-7B-Instruct",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
     "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 32000,
-    "description": "硅基流动托管的 Qwen2.5-7B，免费档。", "note": "免费档，速率限制较严"
+    "description": "硅基流动托管的 Qwen2.5-7B，免费额度可用。", "note": "新用户 2000 万 token 永久免费额度，速率限制较严",
+    "tags": ["free", "value"]
   },
   {
     "id": "sf-deepseek-v2.5", "name": "SiliconFlow · DeepSeek-V2.5", "provider": "siliconflow", "free": true, "requiresKey": true,
     "defaultModel": "deepseek-ai/DeepSeek-V2.5", "apiModel": "deepseek-ai/DeepSeek-V2.5",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
     "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 32000,
-    "description": "硅基流动托管的 DeepSeek-V2.5，免费档。", "note": "免费档，速率限制较严"
+    "description": "硅基流动托管的 DeepSeek-V2.5，免费额度可用。", "note": "新用户 2000 万 token 永久免费额度，速率限制较严",
+    "tags": ["free", "value"]
   },
   {
     "id": "sf-glm-4-9b", "name": "SiliconFlow · GLM-4-9B", "provider": "siliconflow", "free": true, "requiresKey": true,
     "defaultModel": "THUDM/glm-4-9b-chat", "apiModel": "THUDM/glm-4-9b-chat",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
     "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 32000,
-    "description": "硅基流动托管的 GLM-4-9B，免费档。", "note": "免费档，速率限制较严"
+    "description": "硅基流动托管的 GLM-4-9B，免费额度可用。", "note": "新用户 2000 万 token 永久免费额度，速率限制较严",
+    "tags": ["free", "value"]
   },
   {
-    "id": "doubao-pro", "name": "豆包 Doubao-Pro", "provider": "volcengine", "free": true, "requiresKey": true,
+    "id": "doubao-pro", "name": "豆包 Doubao 1.5 Pro", "provider": "volcengine", "free": true, "requiresKey": true,
     "signupUrl": "https://console.volcengine.com/ark", "apiStyle": "openai",
     "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-1-5-pro-32k-250115", "contextLimit": 32000,
-    "description": "火山方舟豆包大模型，有免费试用额度。", "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID。",
+    "description": "火山方舟豆包大模型，极低成本（约 $0.0003/$0.0007 每百万 token）。", "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID；新用户有免费额度。",
     "modelIdHint": "火山方舟接入点 ID（ep- 开头，如 ep-2024abcd）",
-    "hint": "ⓘ 在火山方舟控制台创建推理接入点后，把 ep- 开头的 ID 填到下面即可。"
+    "hint": "ⓘ 在火山方舟控制台创建推理接入点后，把 ep- 开头的 ID 填到下面即可。",
+    "tags": ["value", "free"]
   },
   {
     "id": "hunyuan-pro", "name": "腾讯混元 Pro", "provider": "tencent", "free": true, "requiresKey": true,
     "defaultModel": "hunyuan-pro",
     "signupUrl": "https://cloud.tencent.com/product/hunyuan", "apiStyle": "openai",
     "endpoint": "https://api.hunyuan.cloud.tencent.com/v1/chat/completions", "contextLimit": 32000,
-    "description": "腾讯混元大模型，提供 OpenAI 兼容接口与免费额度。", "note": "有免费额度，超出计费"
+    "description": "腾讯混元大模型，提供 OpenAI 兼容接口。", "note": "首次开通赠 100 万 token / 1 年免费额度",
+    "tags": ["value", "free"]
   },
   {
-    "id": "mistral-tiny", "name": "Mistral Tiny", "provider": "mistral", "free": true, "requiresKey": true,
-    "defaultModel": "mistral-tiny",
+    "id": "hunyuan-t1", "name": "腾讯混元 T1", "provider": "tencent", "free": true, "requiresKey": true,
+    "defaultModel": "hunyuan-t1",
+    "signupUrl": "https://cloud.tencent.com/product/hunyuan", "apiStyle": "openai",
+    "endpoint": "https://api.hunyuan.cloud.tencent.com/v1/chat/completions", "contextLimit": 256000,
+    "description": "混元深度推理主力，256K 长上下文，性价比首选（约 ¥1/¥4 每百万 token）。", "note": "首次开通赠 100 万 token / 1 年免费额度",
+    "tags": ["latest", "value", "free"]
+  },
+  {
+    "id": "hunyuan-lite", "name": "腾讯混元 Lite", "provider": "tencent", "free": true, "requiresKey": true,
+    "defaultModel": "hunyuan-lite",
+    "signupUrl": "https://cloud.tencent.com/product/hunyuan", "apiStyle": "openai",
+    "endpoint": "https://api.hunyuan.cloud.tencent.com/v1/chat/completions", "contextLimit": 128000,
+    "description": "混元轻量版，完全免费调用，适合简单任务。", "note": "永久免费",
+    "tags": ["free", "value"]
+  },
+  {
+    "id": "mistral-large-latest", "name": "Mistral Large", "provider": "mistral", "free": true, "requiresKey": true,
+    "defaultModel": "mistral-large-latest",
     "signupUrl": "https://console.mistral.ai/", "apiStyle": "openai",
-    "endpoint": "https://api.mistral.ai/v1/chat/completions", "contextLimit": 32000,
-    "description": "Mistral 轻量模型，注册有免费额度。", "note": "有免费额度，超出计费"
+    "endpoint": "https://api.mistral.ai/v1/chat/completions", "contextLimit": 256000,
+    "description": "Mistral 当前旗舰，256K 上下文，前沿质量（约 $0.50/$1.50 每百万 token）。", "note": "La Plateforme 每月 10 亿 token 免费试用额度",
+    "tags": ["latest", "free"]
+  },
+  {
+    "id": "mistral-small-latest", "name": "Mistral Small", "provider": "mistral", "free": true, "requiresKey": true,
+    "defaultModel": "mistral-small-latest",
+    "signupUrl": "https://console.mistral.ai/", "apiStyle": "openai",
+    "endpoint": "https://api.mistral.ai/v1/chat/completions", "contextLimit": 128000,
+    "description": "Mistral 高性价比日常模型（约 $0.15/$0.60 每百万 token）。", "note": "每月 10 亿 token 免费试用额度",
+    "tags": ["value", "free"]
   }
 ]
