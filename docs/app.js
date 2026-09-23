@@ -3,7 +3,7 @@
   'use strict';
 
   var REPO = 'lpf-exclusive/QingJian';
-  var FALLBACK_VERSION = '1.3.31';
+  var FALLBACK_VERSION = '1.3.33';
   var API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
 
   /* ---------- 主题切换 ---------- */
