@@ -3,7 +3,7 @@
   'use strict';
 
   var REPO = 'lpf-exclusive/QingJian';
-  var FALLBACK_VERSION = '1.3.33';
+  var FALLBACK_VERSION = '2.0.0';
   var API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
 
   /* ---------- 主题切换 ---------- */
@@ -74,20 +74,15 @@
       .then(function (data) {
         var tag = (data.tag_name || '').replace(/^v/i, '');
         if (tag) setVersion(tag);
-        var setup = assetUrl(data.assets, /QingJian-Setup-.*\.(exe)$/i);
-        var portable = assetUrl(data.assets, /QingJian-Portable-.*\.(exe|zip)$/i);
+        var setup = assetUrl(data.assets, /QingJian_.*_x64-setup\.(exe)$/i);
         if (setup) {
           var hs = document.getElementById('heroDownload');
           var ds = document.getElementById('dlSetup');
           if (hs) hs.href = setup;
           if (ds) ds.href = setup;
         }
-        if (portable) {
-          var dp = document.getElementById('dlPortable');
-          if (dp) dp.href = portable;
-        }
       })
-      .catch(function () { /* 静默回退到静态 v1.3.29 */ });
+      .catch(function () { /* 静默回退到静态 v2.0.0 */ });
   }
 
   /* ---------- 初始化 ---------- */
