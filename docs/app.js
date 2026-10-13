@@ -81,6 +81,11 @@
           if (hs) hs.href = setup;
           if (ds) ds.href = setup;
         }
+        var deb = assetUrl(data.assets, /QingJian_.*_amd64\.(deb)$/i);
+        if (deb) {
+          var dl = document.getElementById('dlLinux');
+          if (dl) dl.href = deb;
+        }
       })
       .catch(function () { /* 静默回退到静态 v2.0.0 */ });
   }
