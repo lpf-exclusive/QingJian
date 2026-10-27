@@ -1,11 +1,11 @@
 [
   {
-    "id": "deepseek-v4-flash", "name": "DeepSeek V4 Flash", "provider": "deepseek", "free": true, "requiresKey": true,
-    "defaultModel": "deepseek-v4-flash",
+    "id": "deepseek-flash", "name": "DeepSeek V4.1 Flash", "provider": "deepseek", "free": true, "requiresKey": true,
+    "defaultModel": "deepseek-flash",
     "signupUrl": "https://platform.deepseek.com/", "apiStyle": "openai",
     "endpoint": "https://api.deepseek.com/chat/completions", "contextLimit": 1000000,
-    "description": "DeepSeek V4 高速经济档，1M 上下文，非思考/思考双模式（约 $0.14/$0.28 每百万 token）。",
-    "note": "新用户赠送试用额度；旧 deepseek-chat / deepseek-reasoner 已于 2026-07-24 停用",
+    "description": "DeepSeek V4.1 Flash（V4.1-Flash-1017），1M 上下文、384K 最大输出，支持图像输入；峰谷分时计价（off-peak 约 $0.15/$0.60、peak 约 $0.30/$1.20 每百万 token）。",
+    "note": "新用户赠送试用额度；旧名 deepseek-chat / deepseek-reasoner 已于 2026-07-24 停用，deepseek-v4-flash / deepseek-v4-flash-vision-exp 亦已退役（请求被重定向到 V4.1-Flash 并按 Flash 计费）",
     "tags": ["value", "free"]
   },
   {
@@ -13,7 +13,7 @@
     "defaultModel": "deepseek-v4-pro",
     "signupUrl": "https://platform.deepseek.com/", "apiStyle": "openai",
     "endpoint": "https://api.deepseek.com/chat/completions", "contextLimit": 1000000,
-    "description": "DeepSeek V4 旗舰，复杂推理与长上下文（约 $0.435/$0.87 每百万 token）。",
+    "description": "DeepSeek V4 Pro（V4-Pro-0813），1M 上下文、384K 最大输出，复杂推理与长上下文；峰谷分时计价（off-peak 约 $0.66/$1.98、peak 约 $1.32/$3.96 每百万 token）。",
     "note": "复杂推理 / Agent 场景首选",
     "tags": ["latest"]
   },
@@ -21,8 +21,8 @@
     "id": "qwen-max", "name": "通义千问 Max", "provider": "qwen", "free": true, "requiresKey": true,
     "defaultModel": "qwen-max",
     "signupUrl": "https://dashscope.console.aliyun.com/", "apiStyle": "openai",
-    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 128000,
-    "description": "通义千问最强档，复杂任务表现最好（当前指向 qwen3-max 系列）。",
+    "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", "contextLimit": 1000000,
+    "description": "通义千问最强档，当前指向 Qwen3.8-Max（0902 版），1M 上下文、原生多模态（文本/图像/视频输入）。",
     "note": "新用户每模型 100 万 token / 90 天免费额度",
     "tags": ["latest", "free"]
   },
@@ -49,8 +49,8 @@
     "defaultModel": "kimi-k2.6",
     "signupUrl": "https://platform.moonshot.cn/", "apiStyle": "openai",
     "endpoint": "https://api.moonshot.cn/v1/chat/completions", "contextLimit": 262144,
-    "description": "Kimi 通用模型，256K 长上下文，支持多模态（约 $0.95/$4 每百万 token）。",
-    "note": "需充值后使用，无免费额度",
+    "description": "Kimi 通用模型，256K 长上下文，支持视觉与文本输入（约 $0.95/$4 每百万 token）。",
+    "note": "需充值后使用。注意：K2 系列自 2026-10-31 起对新注册用户关闭，计划 2026-12-31 前全部退役；存量用户不受影响，但需预留迁移",
     "tags": ["value"]
   },
   {
@@ -67,7 +67,7 @@
     "defaultModel": "glm-5.3",
     "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
     "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 1000000,
-    "description": "智谱 GLM-5.3，1M 上下文，思考模式常开（reasoning_effort low/high/max）（约 $1.40/$4.40 每百万 token）。",
+    "description": "智谱 GLM-5.3，1M 上下文，思考模式常开（reasoning_effort low/high/max）（官方 ¥8/¥28 每百万 token，缓存命中 ¥2）。",
     "note": "调用需开启 thinking；旧 glm-4.x 已不再列入",
     "tags": ["latest"]
   },
@@ -76,41 +76,41 @@
     "defaultModel": "glm-5.3-flash",
     "signupUrl": "https://open.bigmodel.cn/", "apiStyle": "openai",
     "endpoint": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "contextLimit": 1000000,
-    "description": "智谱 GLM-5.3 Flash，高性价比轻量档（思考常开）。",
+    "description": "智谱 GLM-5.3 Flash，高性价比轻量档（思考常开），原生多模态（图片/视频/文件/文本输入）（官方 ¥0.8/¥2.8 每百万 token）。",
     "note": "高速经济档",
     "tags": ["value", "free"]
   },
   {
-    "id": "sf-qwen3-8b", "name": "SiliconFlow · Qwen3-8B", "provider": "siliconflow", "free": true, "requiresKey": true,
+    "id": "sf-qwen3-8b", "name": "SiliconFlow · Qwen3-8B", "provider": "siliconflow", "free": false, "requiresKey": true,
     "defaultModel": "Qwen/Qwen3-8B", "apiModel": "Qwen/Qwen3-8B",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
     "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 262144,
-    "description": "硅基流动托管的 Qwen3-8B，免费额度可用（262K 上下文）。",
-    "note": "新用户 2000 万 token 永久免费额度，速率限制较严",
-    "tags": ["free", "value"]
+    "description": "硅基流动托管的 Qwen3-8B（262K 上下文）。注意：已不在免费档，按量计费。",
+    "note": "硅基流动 2026-10 起对话类模型全部改为按量计费（平台免费位仅剩 Xing4.0-29B 等）；该模型在当前定价页未列出，调用前请先在云平台确认是否仍上架与单价",
+    "tags": ["value"]
   },
   {
     "id": "sf-deepseek-v4-flash", "name": "SiliconFlow · DeepSeek-V4-Flash", "provider": "siliconflow", "free": false, "requiresKey": true,
     "defaultModel": "deepseek-ai/DeepSeek-V4-Flash", "apiModel": "deepseek-ai/DeepSeek-V4-Flash",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
     "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 1000000,
-    "description": "硅基流动托管的 DeepSeek-V4-Flash，1M 上下文，性价比高（约 $0.13/$0.28 每百万 token）。",
-    "note": "新用户 2000 万 token 永久免费额度",
+    "description": "硅基流动托管的 DeepSeek-V4-Flash，1M 上下文；分时计价（0-2/8-24 点 ¥3/¥9，2-8 点 ¥1.5/¥4.5 每百万 token）。同平台已有更新的 DeepSeek-V4.1-Flash。",
+    "note": "新用户赠 14 元平台配额（官方口径：2000 万 token 系按 Qwen1.5-14B 单价折算的宣传数）",
     "tags": ["value"]
   },
   {
-    "id": "sf-glm-5", "name": "SiliconFlow · GLM-5", "provider": "siliconflow", "free": false, "requiresKey": true,
-    "defaultModel": "THUDM/GLM-5", "apiModel": "THUDM/GLM-5",
+    "id": "sf-glm-5", "name": "SiliconFlow · GLM-5.3", "provider": "siliconflow", "free": false, "requiresKey": true,
+    "defaultModel": "zai-org/GLM-5.3", "apiModel": "zai-org/GLM-5.3",
     "signupUrl": "https://cloud.siliconflow.cn/", "apiStyle": "openai",
-    "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 200000,
-    "description": "硅基流动托管的 GLM-5，约 200K 上下文（约 $1.40/$4.40 每百万 token）。",
-    "note": "新用户 2000 万 token 永久免费额度",
+    "endpoint": "https://api.siliconflow.cn/v1/chat/completions", "contextLimit": 1000000,
+    "description": "硅基流动托管的 GLM-5.3，1M 上下文（¥8/¥28 每百万 token）。旧 ID THUDM/GLM-5 已随组织改名失效，现为 zai-org。",
+    "note": "新用户赠 14 元平台配额（官方口径：2000 万 token 系按 Qwen1.5-14B 单价折算的宣传数）；同平台另有更便宜的 GLM-5.3-Flash（¥0.8/¥2.8）",
     "tags": ["value"]
   },
   {
     "id": "doubao-seed-2.0-pro", "name": "豆包 Doubao Seed-2.0 Pro", "provider": "volcengine", "free": true, "requiresKey": true,
     "signupUrl": "https://console.volcengine.com/ark", "apiStyle": "openai",
-    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-pro-260215", "contextLimit": 32000,
+    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-pro-260215", "contextLimit": 256000,
     "description": "火山方舟豆包 Seed-2.0 旗舰，面向 Agent 复杂推理（约 ¥3.2/¥16 每百万 token）。",
     "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID；新用户有免费额度。",
     "modelIdHint": "火山方舟接入点 ID（ep- 开头，如 ep-2024abcd）",
@@ -118,9 +118,19 @@
     "tags": ["latest", "value", "free"]
   },
   {
+    "id": "doubao-seed-2.1-pro", "name": "豆包 Doubao Seed-2.1 Pro", "provider": "volcengine", "free": true, "requiresKey": true,
+    "signupUrl": "https://console.volcengine.com/ark", "apiStyle": "openai",
+    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-1-pro-260915", "contextLimit": 256000,
+    "description": "火山方舟豆包 Seed-2.1 旗舰（0915 版），面向 Coding 与 Agent 长链路任务，256K 上下文、原生多模态（约 ¥9/¥45 每百万 token，以官方定价页为准）。",
+    "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID；固定版本另有 doubao-seed-2-1-pro-260628，跟随最新可用 doubao-seed-evolving（1024K 上下文）；新用户有免费额度。",
+    "modelIdHint": "火山方舟接入点 ID（ep- 开头，如 ep-2024abcd）",
+    "hint": "ⓘ 在火山方舟控制台创建推理接入点后，把 ep- 开头的 ID 填到下面即可。",
+    "tags": ["latest", "value", "free"]
+  },
+  {
     "id": "doubao-seed-2.0-lite", "name": "豆包 Doubao Seed-2.0 Lite", "provider": "volcengine", "free": true, "requiresKey": true,
     "signupUrl": "https://console.volcengine.com/ark", "apiStyle": "openai",
-    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-lite-260215", "contextLimit": 32000,
+    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-lite-260215", "contextLimit": 128000,
     "description": "火山方舟豆包 Seed-2.0 Lite，均衡低成本档。",
     "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID；新用户有免费额度。",
     "modelIdHint": "火山方舟接入点 ID（ep- 开头，如 ep-2024abcd）",
@@ -130,7 +140,7 @@
   {
     "id": "doubao-seed-2.0-mini", "name": "豆包 Doubao Seed-2.0 Mini", "provider": "volcengine", "free": true, "requiresKey": true,
     "signupUrl": "https://console.volcengine.com/ark", "apiStyle": "openai",
-    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-mini-260215", "contextLimit": 32000,
+    "endpoint": "https://ark.cn-beijing.volces.com/api/v3/chat/completions", "apiModel": "doubao-seed-2-0-mini-260215", "contextLimit": 128000,
     "description": "火山方舟豆包 Seed-2.0 Mini，低时延高并发，成本敏感场景。",
     "note": "需在控制台创建推理接入点，再把 ep- 开头的接入点 ID 填入下方模型 ID；新用户有免费额度。",
     "modelIdHint": "火山方舟接入点 ID（ep- 开头，如 ep-2024abcd）",
