@@ -3,8 +3,13 @@
   'use strict';
 
   var REPO = 'lpf-exclusive/QingJian';
-  var FALLBACK_VERSION = '2.0.3';
   var API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
+  // 版本号与下载直链一律在运行时取自 GitHub Releases，本文件不写死任何版本。
+  // 不读 releases/latest/download/latest.json 直链：它走 objects CDN，实测有
+  // 504 / 502 抖动且拿不到稳定 CORS 头；api.github.com 明确 ACAO:*，且返回
+  // 同一份发布事实（tag_name + assets.browser_download_url）。
+  // 拉取失败时保留 HTML 里的「最新版」占位与 releases/latest 页面链接，
+  // 绝不回退到写死的旧版本号或旧安装包。
 
   /* ---------- 主题切换 ---------- */
   var THEME_KEY = 'qj-site-theme';
@@ -54,6 +59,7 @@
   }
 
   /* ---------- 版本拉取 ---------- */
+  // 接收完整版本标签（形如 v2.x）；未取到数据时 HTML 占位为「最新版」
   function setVersion(v) {
     var nodes = document.querySelectorAll('#heroVersion, #downloadVersion');
     Array.prototype.forEach.call(nodes, function (n) { n.textContent = v; });
@@ -68,12 +74,13 @@
   }
 
   function fetchLatest() {
-    if (!window.fetch) return; // 老浏览器回退静态版本
-    fetch(API, { headers: { 'Accept': 'application/vnd.github+json' } })
+    if (!window.fetch) return; // 老浏览器：保留「最新版」占位与 Releases 页链接
+    // cache-buster：releases/latest 同一 URL 可能返缓存旧值（此前发版时踩过）
+    window.fetch(API + '?_cb=' + Date.now(), { headers: { 'Accept': 'application/vnd.github+json' } })
       .then(function (r) { if (!r.ok) throw new Error('bad status ' + r.status); return r.json(); })
       .then(function (data) {
-        var tag = (data.tag_name || '').replace(/^v/i, '');
-        if (tag) setVersion(tag);
+        var tag = data.tag_name || '';
+        if (tag) setVersion(/^v/i.test(tag) ? tag : 'v' + tag);
         var setup = assetUrl(data.assets, /QingJian_.*_x64-setup\.(exe)$/i);
         if (setup) {
           var hs = document.getElementById('heroDownload');
@@ -87,7 +94,13 @@
           if (dl) dl.href = deb;
         }
       })
-      .catch(function () { /* 静默回退到静态 v2.0.3 */ });
+      .catch(function (err) {
+        // 失败要出声；页面仍可用：按钮指向永远有效的 releases/latest 页面
+        if (window.console && console.warn) {
+          console.warn('[QingJian] 最新版本获取失败，已保留 Releases 页链接：',
+            err && err.message ? err.message : err);
+        }
+      });
   }
 
   /* ---------- 初始化 ---------- */

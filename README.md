@@ -10,9 +10,9 @@
 
 轻笺是一款面向开发者和日常文本处理用户的轻量编辑器，采用 Tauri 2（Rust）+ CodeMirror 6 实现，数据存本地、零后端、无需登录。当前版本已实现多标签编辑、语法高亮、Markdown 分屏预览与导出（HTML / PDF / Word）、AI 助手、侧边待办面板、数学公式（KaTeX）、电子表格、VCS 浏览、思维导图、本地加密文件与签名自动更新等能力。
 
-- **安装包体积**：Windows 安装版 4,677,517 B（约 4.7 MB）、Linux deb 6,616,390 B（约 6.6 MB）
+- **安装包体积**：Windows 安装版与 Linux deb 均为数 MB 量级，精确体积以 [最新 Release](https://github.com/lpf-exclusive/QingJian/releases/latest) 的资产为准
 - **运行平台**：Windows（nsis 安装版）与 Linux（deb，需系统 WebKit2GTK 4.1）
-- **当前版本**：v2.0.3（GitHub Release 双平台已发布）
+- **当前版本**：![当前版本](https://img.shields.io/github/v/release/lpf-exclusive/QingJian?label=version&color=018B8D)（徽章实时读取 GitHub Releases，无需手工维护；Windows / Linux 双平台已发布）
 
 ---
 
@@ -74,16 +74,16 @@
 
 ### Windows 安装版（推荐）
 
-前往 [Releases](https://github.com/lpf-exclusive/QingJian/releases) 下载 `QingJian_2.0.3_x64-setup.exe`，双击运行，按向导完成安装即可。
+前往 [最新 Release](https://github.com/lpf-exclusive/QingJian/releases/latest) 下载 Windows 安装版（`QingJian_*_x64-setup.exe`），双击运行，按向导完成安装即可。
 
 > Tauri 2 版本不再提供便携版 / 免安装版；历史便携版属已冻结的 Electron 版本。
 
 ### Linux（deb）
 
-下载 `QingJian_2.0.3_amd64.deb`（适用于 Ubuntu / Debian，需系统 WebKit2GTK 4.1），执行：
+在 [最新 Release](https://github.com/lpf-exclusive/QingJian/releases/latest) 下载 deb 包（`QingJian_*_amd64.deb`，适用于 Ubuntu / Debian，需系统 WebKit2GTK 4.1），在下载目录执行：
 
 ```bash
-sudo apt install ./QingJian_2.0.3_amd64.deb
+sudo apt install ./QingJian_*_amd64.deb
 ```
 
 ### 首次启动
