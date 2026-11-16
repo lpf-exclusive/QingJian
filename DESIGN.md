@@ -1,5 +1,9 @@
 # 轻笺 (QingJian) 设计方案 —— v1.3.13 实际落地版
 
+> 【历史归档 · 2026-11-16】本文是 v1.3.13 时期 Electron 方案的落地记录，仅作历史参考，不代表当前实现：技术选型、安装包体积、运行平台、便携版与 electron-updater 自动更新方案均已不再适用。当前主线为 Tauri 2（源码仓 QingJianTauri），v2.0.x 起支持 Windows / Linux 双平台；现状请以官网仓 README.md 与 Tauri 主仓代码为准。
+>
+> 以下原文不作修订。
+
 > 本文档基于实际已实现的 Electron + CodeMirror 6 版本重写，替代早期 Tauri 预研方案，用于后续版本跟踪。
 
 ---

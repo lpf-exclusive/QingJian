@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>轻笺 QingJian — 秒开 · 不臃肿 · 可离线的跨平台编辑器</title>
-  <meta name="description" content="轻笺 QingJian 是一款基于 Tauri + CodeMirror 6 的轻量级跨平台文本/代码编辑器，追求秒开、不臃肿、可离线使用。支持 Windows 与 Linux，涵盖语法高亮、多标签、电子表格、思维导图、VCS 浏览与检查更新。" />
+  <title>轻笺 QingJian — 本地优先的轻量 Markdown 写作 / 代码编辑器</title>
+  <meta name="description" content="轻笺 QingJian 是本地优先、零后端、无需登录的轻量编辑器：Markdown 写作与分屏预览、数学公式（KaTeX）、代码高亮、导出 HTML / PDF / Word（.docx）、AI 助手（BYOK，20 个策展模型）、侧边待办面板。基于 Tauri 2 + CodeMirror 6，支持 Windows 与 Linux，数据留在本机。" />
   <link rel="icon" href="assets/logo.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -41,8 +41,8 @@
           <span class="hero-badge">Tauri 2 · CodeMirror 6 · 跨平台</span>
           <h1 class="hero-title">秒开 · 不臃肿 · 可离线</h1>
           <p class="hero-sub">
-            轻笺是一款面向开发者与日常文本处理的轻量级跨平台编辑器。
-            安装包小巧，启动即用，离线也能跑满全部核心能力。
+            轻笺是本地优先的轻量编辑器：Markdown 写作与笔记、代码与文本编辑，数据全部留在本机。
+            安装包小巧，启动即用，离线也能跑满核心能力（AI 助手按需自备密钥联网使用）。
           </p>
           <div class="hero-cta">
             <a class="btn btn-primary" id="heroDownload" href="https://github.com/lpf-exclusive/QingJian/releases/latest">
@@ -50,7 +50,7 @@
             </a>
             <a class="btn btn-ghost" href="#features">查看功能</a>
           </div>
-          <p class="hero-meta">Windows 安装包约 4&nbsp;MB 起 · 另提供 Linux deb 版</p>
+          <p class="hero-meta">Windows 安装包 <span id="heroWinSize">数 MB 量级</span> · Linux deb <span id="heroDebSize">数 MB 量级</span></p>
         </div>
 
         <!-- SVG 编辑器示意 mockup -->
@@ -112,7 +112,7 @@
     <section class="section" id="features">
       <div class="section-head">
         <h2>核心能力</h2>
-        <p>覆盖日常写作、代码开发与文件管理，全部本地运行，无需登录、不上传数据。</p>
+        <p>覆盖 Markdown 写作、代码开发与文件管理，数据留在本机、无需登录；AI 助手按需自备密钥联网使用。</p>
       </div>
       <div class="cards">
         <article class="card">
@@ -158,6 +158,28 @@
             <li>偏好设置：字体、字号、换行、缩进</li>
           </ul>
         </article>
+        <article class="card">
+          <div class="card-icon">MD</div>
+          <h3>Markdown 写作与导出</h3>
+          <ul>
+            <li>分屏预览 / 仅预览 / 脑图模式，大纲导航按标题生成并跳转</li>
+            <li>专注模式（Zen，Esc 退出）、字数统计与写作目标、命令面板快捷命令</li>
+            <li>数学公式渲染（KaTeX）：行内 $...$、块级 $$...$$</li>
+            <li>导出 Markdown、HTML、PDF、Word（.docx）；本地加密文件 + 恢复密钥</li>
+            <li>侧边待办面板：自动收集任务项，勾选写回文档</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="card-icon">AI</div>
+          <h3>AI 助手</h3>
+          <ul>
+            <li>右侧对话栏：Ctrl+Shift+A 唤出（启动时默认关闭），流式输出、多轮对话</li>
+            <li>BYOK：填入一个 API Key 即用；内置 20 个策展模型</li>
+            <li>10 个内联动作：润色 / 续写 / 缩写 / 扩写 / 翻译 / 解释 / 正式 / 口语 / 活泼语气</li>
+            <li>支持视觉的模型可附加图片；自定义系统提示词（设置 → AI 助手）</li>
+            <li>API Key 由操作系统凭据库保存，明文不落盘</li>
+          </ul>
+        </article>
       </div>
     </section>
 
@@ -186,7 +208,7 @@
       <p class="dl-note">
         所有安装包托管于 GitHub Releases：
         <a href="https://github.com/lpf-exclusive/QingJian/releases" target="_blank" rel="noopener">lpf-exclusive/QingJian</a>。
-        可在应用内「检查更新」获取新版本。
+        可在应用内「检查更新」获取新版本；若网络受限无法连接更新源，直接在上方下载安装包手动升级即可。
       </p>
     </section>
 

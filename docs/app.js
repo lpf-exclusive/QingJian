@@ -73,6 +73,24 @@
     return null;
   }
 
+  // 体积同样取自 Release 资产（GitHub API 的 assets[].size），不写死 MB 数字
+  function assetSizeMB(assets, re) {
+    if (!assets) return null;
+    for (var i = 0; i < assets.length; i++) {
+      var a = assets[i];
+      if (re.test(a.name) && typeof a.size === 'number' && a.size > 0) {
+        return Math.max(1, Math.ceil(a.size / 1048576));
+      }
+    }
+    return null;
+  }
+
+  function setSize(id, mb) {
+    if (!mb) return; // 取不到就保留 HTML 里的「数 MB 量级」占位
+    var n = document.getElementById(id);
+    if (n) n.textContent = '约 ' + mb + ' MB';
+  }
+
   function fetchLatest() {
     if (!window.fetch) return; // 老浏览器：保留「最新版」占位与 Releases 页链接
     // cache-buster：releases/latest 同一 URL 可能返缓存旧值（此前发版时踩过）
@@ -93,6 +111,8 @@
           var dl = document.getElementById('dlLinux');
           if (dl) dl.href = deb;
         }
+        setSize('heroWinSize', assetSizeMB(data.assets, /QingJian_.*_x64-setup[.]exe$/i));
+        setSize('heroDebSize', assetSizeMB(data.assets, /QingJian_.*_amd64[.]deb$/i));
       })
       .catch(function (err) {
         // 失败要出声；页面仍可用：按钮指向永远有效的 releases/latest 页面
