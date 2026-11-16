@@ -21,7 +21,7 @@
 ### 编辑器核心
 - 多标签页编辑，支持拖拽排序
 - 基于 CodeMirror 6 的语法高亮、行号、代码折叠、括号匹配
-- 语言高亮扩展：JavaScript/TypeScript、JSON、HTML、CSS、Python、Markdown、SQL、YAML、Shell 等 10 类；其余格式按文本或流模式打开
+- 语言高亮扩展：JavaScript/TypeScript、JSON、HTML、CSS、Python、Markdown、SQL、YAML、Shell 等 10 类（YAML / Shell 走流模式）；其余扩展名只按类型归类、状态栏显示语言标签，不启用语法高亮；未识别的扩展名按纯文本打开
 - 大文件分级：>50 MB 关闭语法高亮保证流畅；>150 MB 强制只读兜底；文本读取上限 250 MB、二进制 300 MB
 - 查找/替换（支持正则）、跳转行、全局搜索（在文件中查找）
 - 主题切换：浅色 / 深色 / 跟随系统（首次安装默认浅色；在「设置 → 外观 → 主题」中调整）
