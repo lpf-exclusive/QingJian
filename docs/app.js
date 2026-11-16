@@ -3,7 +3,7 @@
   'use strict';
 
   var REPO = 'lpf-exclusive/QingJian';
-  var FALLBACK_VERSION = '2.0.0';
+  var FALLBACK_VERSION = '2.0.3';
   var API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
 
   /* ---------- 主题切换 ---------- */
@@ -87,7 +87,7 @@
           if (dl) dl.href = deb;
         }
       })
-      .catch(function () { /* 静默回退到静态 v2.0.0 */ });
+      .catch(function () { /* 静默回退到静态 v2.0.3 */ });
   }
 
   /* ---------- 初始化 ---------- */
